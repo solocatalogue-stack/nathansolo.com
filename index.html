@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nathan Solo</title>
     <meta name="description"
-        content="Nathan Solo: hardware techno live act and DJ from Lausanne. Laptop-free live sets between techno, electro, ambient and dub, plus audio-reactive AV shows. Booking: solo.catalogue@gmail.com">
+        content="Nathan Solo: hardware techno live act and DJ from Lausanne. Laptop-free live sets between techno, electro, ambient and dub, plus audio-reactive AV shows. Booking via nathansolo.com.">
     <meta property="og:title" content="Nathan Solo">
-    <meta property="og:description" content="Hardware techno live act and DJ from Lausanne. Booking: solo.catalogue@gmail.com">
+    <meta property="og:description" content="Hardware techno live act and DJ from Lausanne. Booking via nathansolo.com.">
     <meta property="og:image" content="https://nathansolo.com/NS.jpg">
     <meta property="og:url" content="https://nathansolo.com/">
     <meta property="og:type" content="website">
@@ -514,7 +514,7 @@
                         target="_blank">Mixcloud</a></li>
                 <li class="nav-item">Log <a class="link-menu" href="https://ra.co/dj/nathansolo"
                         target="_blank">Resident Advisor</a></li>
-                <li class="nav-item">Contact <a class="link-menu" href="mailto:solo.catalogue@gmail.com">e-mail</a></li>
+                <li class="nav-item">Contact <a class="link-menu js-mail" href="#contact" data-u="solo.catalogue" data-d="moc.liamg">e-mail</a></li>
             </ul>
         </nav>
 
@@ -546,7 +546,7 @@
                 Theropodos EP (2025).
             </p>
             <p class="paragraph">
-                Booking and bounty prices: <a href="mailto:solo.catalogue@gmail.com">solo.catalogue@gmail.com</a>.
+                Booking and bounty prices: <a href="#contact" class="js-mail" data-u="solo.catalogue" data-d="moc.liamg">send an e-mail</a>.
                 The tech rider, photos and bio are in the <a href="epk">EPK</a>.
             </p>
         </section>
@@ -1161,6 +1161,15 @@
             movePhoto();
         });
     </script>
+<script>
+// Builds the e-mail address only when a visitor clicks, so it is not in the page for spam bots.
+document.querySelectorAll(".js-mail").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "mai" + "lto:" + a.dataset.u + "@" + a.dataset.d.split("").reverse().join("");
+    });
+});
+</script>
 </body>
 
 

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nathan Solo — EPK 2026</title>
-<meta name="description" content="Nathan Solo EPK (EN/FR): hardware techno live act and DJ from Lausanne. Booking: solo.catalogue@gmail.com">
+<meta name="description" content="Nathan Solo EPK (EN/FR): hardware techno live act and DJ from Lausanne. Booking via nathansolo.com.">
 <meta property="og:title" content="Nathan Solo — EPK 2026">
 <meta property="og:image" content="https://nathansolo.com/NS.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -354,7 +354,7 @@
       <div>
         <div class="section-title">Booking · Contact</div>
         <div class="section-body">
-          <a href="mailto:solo.catalogue@gmail.com" style="color:#0a0a0a;text-decoration:none">solo.catalogue@gmail.com</a><br>
+          <a href="#contact" class="js-mail" data-u="solo.catalogue" data-d="moc.liamg" style="color:#0a0a0a;text-decoration:underline">E-mail for booking</a><br>
         </div>
       </div>
       <div>
@@ -372,5 +372,14 @@
 
   </div>
 </div>
+<script>
+// Builds the e-mail address only when a visitor clicks, so it is not in the page for spam bots.
+document.querySelectorAll(".js-mail").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "mai" + "lto:" + a.dataset.u + "@" + a.dataset.d.split("").reverse().join("");
+    });
+});
+</script>
 </body>
 </html>
