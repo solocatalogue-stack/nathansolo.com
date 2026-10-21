@@ -384,6 +384,19 @@
                         height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
+        /* ── BLACK HOLE ── */
+        .profile-photo {
+            box-shadow: 0 0 0 2px #000,
+                        0 0 30px 10px rgba(0, 0, 0, 0.55),
+                        0 0 80px 28px rgba(255, 48, 0, 0.16);
+        }
+
+        .bh {
+            display: inline-block;
+            text-indent: 0;
+            will-change: transform;
+        }
+
         /* ── FOOTER ── */
         .footer {
             font-size: 11px;
@@ -1160,6 +1173,79 @@
             document.addEventListener('mousemove', e => applyBoost(e.clientX, e.clientY));
             movePhoto();
         });
+    </script>
+    <script>
+        // ── Black hole: words near the bouncing photo get pulled in, shrink and swirl ──
+        (function () {
+            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+            const photo = document.getElementById("profilePhoto");
+            const targets = ".nav-item, .perex, .paragraph, .listen-item-label, .col-header, .gig-entry, .release-entry, .footer";
+            let items = [];
+
+            // Wrap every word in a span so each one can move on its own
+            function wrapWords(root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) if (walker.currentNode.textContent.trim()) nodes.push(walker.currentNode);
+                nodes.forEach(function (node) {
+                    const frag = document.createDocumentFragment();
+                    node.textContent.split(/(\s+)/).forEach(function (part) {
+                        if (!part) return;
+                        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+                        const span = document.createElement("span");
+                        span.className = "bh";
+                        span.textContent = part;
+                        frag.appendChild(span);
+                    });
+                    node.parentNode.replaceChild(frag, node);
+                });
+            }
+            document.querySelectorAll(targets).forEach(wrapWords);
+
+            // Cache each word's resting position in page coordinates
+            function measure() {
+                const sx = window.scrollX, sy = window.scrollY;
+                items = Array.from(document.querySelectorAll(".bh")).map(function (el) {
+                    el.style.transform = "";
+                    const r = el.getBoundingClientRect();
+                    return { el: el, x: r.left + r.width / 2 + sx, y: r.top + r.height / 2 + sy, on: false, visible: r.width > 0 };
+                });
+            }
+            measure();
+            window.addEventListener("resize", measure);
+            window.addEventListener("load", measure);
+            document.addEventListener("click", function () { setTimeout(measure, 450); });
+
+            function tick() {
+                const r = photo.getBoundingClientRect();
+                const cx = r.left + r.width / 2 + window.scrollX;
+                const cy = r.top + r.height / 2 + window.scrollY;
+                const hole = r.width / 2;
+                const reach = hole * 2.1;
+
+                for (let i = 0; i < items.length; i++) {
+                    const it = items[i];
+                    if (!it.visible) continue;
+                    const dx = cx - it.x, dy = cy - it.y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < reach) {
+                        const f = Math.pow(1 - d / reach, 2);
+                        const pull = Math.min(d * 0.6, hole * 0.5) * f;
+                        const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
+                        it.el.style.transform = "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px) rotate(" + (f * 35).toFixed(1) + "deg) scale(" + (1 - 0.7 * f).toFixed(3) + ")";
+                        it.el.style.opacity = (1 - 0.6 * f).toFixed(2);
+                        it.on = true;
+                    } else if (it.on) {
+                        it.el.style.transform = "";
+                        it.el.style.opacity = "";
+                        it.on = false;
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        })();
     </script>
 <script>
 // Builds the e-mail address only when a visitor clicks, so it is not in the page for spam bots.
