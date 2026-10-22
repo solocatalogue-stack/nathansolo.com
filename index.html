@@ -1207,6 +1207,7 @@
                 "uniform vec2 pageSize;",
                 "uniform float einstein;", // Einstein radius
                 "uniform float reach;",
+                "uniform vec3 bg;",
                 "void main(){",
                 "  vec2 p = origin + vec2(v.x, 1.0 - v.y) * box;",
                 "  vec2 d = p - centre;",
@@ -1218,8 +1219,15 @@
                 "  float cs = cos(swirl), sn = sin(swirl);",
                 "  vec2 src = centre + mat2(cs, sn, -sn, cs) * d * pinch;",
                 "  vec4 c = texture2D(page, clamp(src / pageSize, 0.0, 1.0));",
-                "  float edge = smoothstep(reach, reach * 0.92, r);",
-                "  gl_FragColor = vec4(c.rgb, edge);",
+                // where both the bent and the real spot are empty page, let the real page show, so no disc or ring is visible
+                "  float ink = distance(c.rgb, bg);",
+                "  for (int i = 0; i < 9; i++) {",   // look a few px around, so the real letters are fully covered
+                "    vec2 o = vec2(float(i - (i / 3) * 3) - 1.0, float(i / 3) - 1.0) * 4.0;",
+                "    ink += distance(texture2D(page, clamp((p + o) / pageSize, 0.0, 1.0)).rgb, bg);",
+                "  }",
+                "  ink = step(0.02, ink);",
+                "  float edge = smoothstep(reach, reach * 0.985, r);",
+                "  gl_FragColor = vec4(c.rgb, edge * ink);",
                 "}"
             ].join("\n");
 
@@ -1251,9 +1259,9 @@
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
             const u = {};
-            ["origin", "box", "centre", "pageSize", "einstein", "reach"].forEach(function (n) { u[n] = gl.getUniformLocation(prog, n); });
+            ["origin", "box", "centre", "pageSize", "einstein", "reach", "bg"].forEach(function (n) { u[n] = gl.getUniformLocation(prog, n); });
 
-            let ready = false, busy = false, pageW = 1, pageH = 1;
+            let ready = false, busy = false, pageW = 1, pageH = 1, bgRGB = [0.94, 0.94, 0.94];
 
             // Take a picture of the whole page (without fixed elements) to bend
             function snapshot() {
@@ -1277,6 +1285,8 @@
                 }).then(function (shot) {
                     gl.bindTexture(gl.TEXTURE_2D, tex);
                     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, shot);
+                    const px = shot.getContext("2d").getImageData(0, 0, 1, 1).data; // top-left corner is plain page
+                    bgRGB = [px[0] / 255, px[1] / 255, px[2] / 255];
                     pageW = shot.width / scale;
                     pageH = shot.height / scale;
                     if (!ready) {
@@ -1316,6 +1326,7 @@
                     gl.uniform2f(u.pageSize, pageW, pageH);
                     gl.uniform1f(u.einstein, einstein);
                     gl.uniform1f(u.reach, reach);
+                    gl.uniform3fv(u.bg, bgRGB);
                     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
                 }
                 requestAnimationFrame(tick);
