@@ -385,17 +385,10 @@
         }
 
         /* ── BLACK HOLE ── */
-        .lens {
-            position: fixed;
-            left: 0;
-            top: 0;
-            z-index: 50;
-            pointer-events: none;
-            border-radius: 50%;
-        }
-
-        .profile-photo.lensing {
-            z-index: 51;
+        .bh {
+            display: inline-block;
+            text-indent: 0;
+            will-change: transform;
         }
 
         /* ── FOOTER ── */
@@ -1180,155 +1173,85 @@
             movePhoto();
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        // ── Black hole: the page swirls and gets sucked into the bouncing photo ──
-        // A snapshot of the page is twisted and pinched around the photo in WebGL, like a whirlpool.
+        // ── Black hole: words near the bouncing photo get pulled in, shrink and swirl ──
         (function () {
             if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-            if (!window.html2canvas) return;
 
             const photo = document.getElementById("profilePhoto");
-            const canvas = document.createElement("canvas");
-            canvas.className = "lens";
-            const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true });
-            if (!gl) return;
+            const suction = 1.1; // 1 = original strength; raise for a stronger pull
+            const targets = ".nav-item, .perex, .paragraph, .listen-item-label, .col-header, .gig-entry, .release-entry, .footer";
+            let items = [];
 
-            const strength = 1.0; // 1 = default bend; raise for a heavier hole
-
-            const vert = "attribute vec2 a; varying vec2 v; void main(){ v = a * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }";
-            const frag = [
-                "precision highp float;",
-                "varying vec2 v;",
-                "uniform sampler2D page;",
-                "uniform vec2 origin;", // page coords of the canvas top-left (CSS px)
-                "uniform float box;",   // canvas size (CSS px)
-                "uniform vec2 centre;", // hole centre in page coords
-                "uniform vec2 pageSize;",
-                "uniform float einstein;", // Einstein radius
-                "uniform float reach;",
-                "uniform vec3 bg;",
-                "void main(){",
-                "  vec2 p = origin + vec2(v.x, 1.0 - v.y) * box;",
-                "  vec2 d = p - centre;",
-                "  float r = max(length(d), 0.001);",
-                "  if (r > reach) { gl_FragColor = vec4(0.0); return; }",
-                "  float t = 1.0 - r / reach;",              // 0 at the edge, 1 at the centre
-                "  float swirl = einstein * 0.035 * t * t * t;", // twist grows toward the centre
-                "  float pinch = 1.0 + 1.6 * t * t;",           // pull: sample further out, so the page is drawn inward
-                "  float cs = cos(swirl), sn = sin(swirl);",
-                "  vec2 src = centre + mat2(cs, sn, -sn, cs) * d * pinch;",
-                "  vec4 c = texture2D(page, clamp(src / pageSize, 0.0, 1.0));",
-                // where both the bent and the real spot are empty page, let the real page show, so no disc or ring is visible
-                "  float ink = distance(c.rgb, bg);",
-                "  for (int i = 0; i < 9; i++) {",   // look a few px around, so the real letters are fully covered
-                "    vec2 o = vec2(float(i - (i / 3) * 3) - 1.0, float(i / 3) - 1.0) * 4.0;",
-                "    ink += distance(texture2D(page, clamp((p + o) / pageSize, 0.0, 1.0)).rgb, bg);",
-                "  }",
-                "  ink = step(0.02, ink);",
-                "  float edge = smoothstep(reach, reach * 0.985, r);",
-                "  float a = edge * ink;",
-                "  gl_FragColor = vec4(c.rgb * a, a);", // premultiplied, so Safari on iPhone blends it without a white glow
-                "}"
-            ].join("\n");
-
-            function shader(type, src) {
-                const sh = gl.createShader(type);
-                gl.shaderSource(sh, src);
-                gl.compileShader(sh);
-                return sh;
+            // Wrap every word in a span so each one can move on its own
+            function wrapWords(root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) if (walker.currentNode.textContent.trim()) nodes.push(walker.currentNode);
+                nodes.forEach(function (node) {
+                    const frag = document.createDocumentFragment();
+                    node.textContent.split(/(\s+)/).forEach(function (part) {
+                        if (!part) return;
+                        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+                        const span = document.createElement("span");
+                        span.className = "bh";
+                        span.textContent = part;
+                        frag.appendChild(span);
+                    });
+                    node.parentNode.replaceChild(frag, node);
+                });
             }
-            const prog = gl.createProgram();
-            gl.attachShader(prog, shader(gl.VERTEX_SHADER, vert));
-            gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, frag));
-            gl.linkProgram(prog);
-            if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
-            gl.useProgram(prog);
+            document.querySelectorAll(targets).forEach(wrapWords);
 
-            const buf = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
-            const loc = gl.getAttribLocation(prog, "a");
-            gl.enableVertexAttribArray(loc);
-            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-
-            const tex = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, tex);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-            const u = {};
-            ["origin", "box", "centre", "pageSize", "einstein", "reach", "bg"].forEach(function (n) { u[n] = gl.getUniformLocation(prog, n); });
-
-            let ready = false, busy = false, pageW = 1, pageH = 1, bgRGB = [0.94, 0.94, 0.94];
-
-            // Take a picture of the whole page (without fixed elements) to bend
-            function snapshot() {
-                if (busy) return;
-                busy = true;
-                pageW = document.documentElement.scrollWidth;
-                pageH = document.documentElement.scrollHeight;
-                const maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE);
-                const scale = Math.min(window.devicePixelRatio || 1, 2, maxTex / pageH, maxTex / pageW);
-                window.html2canvas(document.documentElement, {
-                    scale: scale,
-                    backgroundColor: getComputedStyle(document.body).backgroundColor,
-                    logging: false,
-                    x: 0, y: 0, width: pageW, height: pageH,
-                    scrollX: 0, scrollY: 0,
-                    windowWidth: document.documentElement.clientWidth,
-                    windowHeight: window.innerHeight,
-                    ignoreElements: function (el) {
-                        return el === canvas || el === photo || el.tagName === "IFRAME" || getComputedStyle(el).position === "fixed";
-                    }
-                }).then(function (shot) {
-                    gl.bindTexture(gl.TEXTURE_2D, tex);
-                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, shot);
-                    const px = shot.getContext("2d").getImageData(0, 0, 1, 1).data; // top-left corner is plain page
-                    bgRGB = [px[0] / 255, px[1] / 255, px[2] / 255];
-                    pageW = shot.width / scale;
-                    pageH = shot.height / scale;
-                    if (!ready) {
-                        document.body.appendChild(canvas);
-                        photo.classList.add("lensing");
-                        ready = true;
-                    }
-                    busy = false;
-                }).catch(function () { busy = false; });
+            // Cache each word's resting position in page coordinates
+            function measure() {
+                const sx = window.scrollX, sy = window.scrollY;
+                items = Array.from(document.querySelectorAll(".bh")).map(function (el) {
+                    el.style.transform = "";
+                    const r = el.getBoundingClientRect();
+                    return { el: el, x: r.left + r.width / 2 + sx, y: r.top + r.height / 2 + sy, on: false, visible: r.width > 0 };
+                });
             }
-
-            let timer;
-            function resnap(delay) { clearTimeout(timer); timer = setTimeout(snapshot, delay); }
-            if (document.readyState === "complete") resnap(300); else window.addEventListener("load", function () { resnap(300); });
-            window.addEventListener("resize", function () { resnap(400); });
-            document.addEventListener("click", function () { resnap(600); });
+            measure();
+            window.addEventListener("resize", measure);
+            window.addEventListener("load", measure);
+            document.addEventListener("click", function () { setTimeout(measure, 450); });
 
             function tick() {
-                if (ready) {
-                    const r = photo.getBoundingClientRect();
-                    const hole = r.width / 2;
-                    const einstein = 100 * strength; // whirlpool twist; 100 = about 3.5 radians at the centre
-                    const reach = hole * 2.6;
-                    const box = Math.ceil(reach * 2);
-                    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-                    if (canvas.width !== Math.round(box * dpr)) {
-                        canvas.width = canvas.height = Math.round(box * dpr);
-                        canvas.style.width = canvas.style.height = box + "px";
-                        gl.viewport(0, 0, canvas.width, canvas.height);
+                const r = photo.getBoundingClientRect();
+                const cx = r.left + r.width / 2 + window.scrollX;
+                const cy = r.top + r.height / 2 + window.scrollY;
+                const hole = r.width / 2;
+                const small = window.innerWidth <= 770;
+                const reach = hole * (small ? 1.7 : 2.1) * suction;
+                const lensReach = reach * 1.25;
+                const lens = small ? 0.25 : 0.35;
+
+                for (let i = 0; i < items.length; i++) {
+                    const it = items[i];
+                    if (!it.visible) continue;
+                    const dx = cx - it.x, dy = cy - it.y;
+                    const d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < lensReach) {
+                        // Suction: pull toward the centre, shrink and swirl (only close in)
+                        const f = d < reach ? Math.pow(1 - d / reach, 2) : 0;
+                        const pull = Math.min(d * 0.6 * suction, hole * (small ? 0.35 : 0.5) * suction) * f;
+                        const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
+                        // Gravity: stretch words toward the hole and thin them sideways, like being sucked in
+                        const g = Math.pow(1 - d / lensReach, 1.5);
+                        const tangent = Math.atan2(dy, dx) * 180 / Math.PI;
+                        const stretch = 1 + lens * g, squash = 1 - lens * 0.45 * g;
+                        it.el.style.transform =
+                            "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px)" +
+                            " rotate(" + tangent.toFixed(1) + "deg) scale(" + stretch.toFixed(3) + "," + squash.toFixed(3) + ") rotate(" + (-tangent).toFixed(1) + "deg)" +
+                            " rotate(" + (f * (small ? 20 : 35)).toFixed(1) + "deg) scale(" + (1 - (small ? 0.5 : 0.7) * f).toFixed(3) + ")";
+                        it.el.style.opacity = (1 - 0.6 * f).toFixed(2);
+                        it.on = true;
+                    } else if (it.on) {
+                        it.el.style.transform = "";
+                        it.el.style.opacity = "";
+                        it.on = false;
                     }
-                    const cx = r.left + hole, cy = r.top + hole;
-                    const left = cx - box / 2, top = cy - box / 2;
-                    canvas.style.transform = "translate(" + left + "px," + top + "px)";
-                    gl.uniform2f(u.origin, left + window.scrollX, top + window.scrollY);
-                    gl.uniform1f(u.box, box);
-                    gl.uniform2f(u.centre, cx + window.scrollX, cy + window.scrollY);
-                    gl.uniform2f(u.pageSize, pageW, pageH);
-                    gl.uniform1f(u.einstein, einstein);
-                    gl.uniform1f(u.reach, reach);
-                    gl.uniform3fv(u.bg, bgRGB);
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
                 }
                 requestAnimationFrame(tick);
             }
