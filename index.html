@@ -1191,7 +1191,7 @@
             const photo = document.getElementById("profilePhoto");
             const canvas = document.createElement("canvas");
             canvas.className = "lens";
-            const gl = canvas.getContext("webgl", { premultipliedAlpha: false });
+            const gl = canvas.getContext("webgl", { premultipliedAlpha: true, alpha: true });
             if (!gl) return;
 
             const strength = 1.0; // 1 = default bend; raise for a heavier hole
@@ -1227,7 +1227,8 @@
                 "  }",
                 "  ink = step(0.02, ink);",
                 "  float edge = smoothstep(reach, reach * 0.985, r);",
-                "  gl_FragColor = vec4(c.rgb, edge * ink);",
+                "  float a = edge * ink;",
+                "  gl_FragColor = vec4(c.rgb * a, a);", // premultiplied, so Safari on iPhone blends it without a white glow
                 "}"
             ].join("\n");
 
