@@ -1244,7 +1244,7 @@
                         it.el.style.transform =
                             "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px)" +
                             " rotate(" + tangent.toFixed(1) + "deg) scale(" + stretch.toFixed(3) + "," + squash.toFixed(3) + ") rotate(" + (-tangent).toFixed(1) + "deg)" +
-                            " scale(" + (1 - (small ? 0.5 : 0.7) * f).toFixed(3) + ")";
+                            " scale(" + (1 - (small ? 0.85 : 0.92) * f).toFixed(3) + ")";
                         it.el.style.opacity = (1 - 0.6 * f).toFixed(2);
                         it.on = true;
                     } else if (it.on) {
