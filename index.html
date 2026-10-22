@@ -1237,6 +1237,8 @@
                         const f = d < reach ? Math.pow(1 - d / reach, 2) : 0;
                         const pull = Math.min(d * 0.6 * suction, hole * (small ? 0.35 : 0.5) * suction) * f;
                         const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
+                        // Shrink: words are at their smallest by the time they reach the circle's edge, and gone inside it
+                        const k = d < reach ? Math.min(1, (reach - d) / (reach - hole)) : 0;
                         // Gravity: stretch words toward the hole and thin them sideways, like being sucked in
                         const g = Math.pow(1 - d / lensReach, 1.5);
                         const tangent = Math.atan2(dy, dx) * 180 / Math.PI;
@@ -1244,8 +1246,8 @@
                         it.el.style.transform =
                             "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px)" +
                             " rotate(" + tangent.toFixed(1) + "deg) scale(" + stretch.toFixed(3) + "," + squash.toFixed(3) + ") rotate(" + (-tangent).toFixed(1) + "deg)" +
-                            " scale(" + (1 - (small ? 0.85 : 0.92) * f).toFixed(3) + ")";
-                        it.el.style.opacity = (1 - 0.6 * f).toFixed(2);
+                            " scale(" + (1 - 0.95 * k).toFixed(3) + ")";
+                        it.el.style.opacity = (1 - k * k).toFixed(2);
                         it.on = true;
                     } else if (it.on) {
                         it.el.style.transform = "";
