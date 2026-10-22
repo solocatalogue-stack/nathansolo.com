@@ -1222,7 +1222,8 @@
                 const cx = r.left + r.width / 2 + window.scrollX;
                 const cy = r.top + r.height / 2 + window.scrollY;
                 const hole = r.width / 2;
-                const reach = hole * 2.1;
+                const small = window.innerWidth <= 770;
+                const reach = hole * (small ? 1.7 : 2.1);
 
                 for (let i = 0; i < items.length; i++) {
                     const it = items[i];
@@ -1231,9 +1232,9 @@
                     const d = Math.sqrt(dx * dx + dy * dy);
                     if (d < reach) {
                         const f = Math.pow(1 - d / reach, 2);
-                        const pull = Math.min(d * 0.6, hole * 0.5) * f;
+                        const pull = Math.min(d * 0.6, hole * (small ? 0.35 : 0.5)) * f;
                         const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
-                        it.el.style.transform = "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px) rotate(" + (f * 35).toFixed(1) + "deg) scale(" + (1 - 0.7 * f).toFixed(3) + ")";
+                        it.el.style.transform = "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px) rotate(" + (f * (small ? 20 : 35)).toFixed(1) + "deg) scale(" + (1 - (small ? 0.5 : 0.7) * f).toFixed(3) + ")";
                         it.el.style.opacity = (1 - 0.6 * f).toFixed(2);
                         it.on = true;
                     } else if (it.on) {
