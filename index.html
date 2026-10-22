@@ -385,12 +385,6 @@
         }
 
         /* ── BLACK HOLE ── */
-        .profile-photo {
-            box-shadow: 0 0 0 2px #000,
-                        0 0 30px 10px rgba(0, 0, 0, 0.55),
-                        0 0 80px 28px rgba(255, 48, 0, 0.16);
-        }
-
         .bh {
             display: inline-block;
             text-indent: 0;
@@ -449,6 +443,11 @@
 
             .top-button {
                 display: none !important;
+            }
+
+            .profile-photo {
+                width: 16.25vh;
+                height: 16.25vh;
             }
 
             .title,
@@ -1115,7 +1114,7 @@
             }
 
             // ── Fixed size (no change on hit) ──
-            const baseSizeVh = 32.5;
+            const baseSizeVh = window.innerWidth <= 770 ? 16.25 : 32.5;
 
             // ── Movement ──
             let size = window.innerHeight * (baseSizeVh / 100);
