@@ -1224,9 +1224,8 @@
                 const hole = r.width / 2;
                 const small = window.innerWidth <= 770;
                 const reach = hole * (small ? 1.7 : 2.1) * suction;
-                const lensReach = reach * 1.5;
-                const now = performance.now();
-                const lens = small ? 0.6 : 0.8;
+                const lensReach = reach * 1.25;
+                const lens = small ? 0.25 : 0.35;
 
                 for (let i = 0; i < items.length; i++) {
                     const it = items[i];
@@ -1236,13 +1235,11 @@
                     if (d < lensReach) {
                         // Suction: pull toward the centre, shrink and swirl (only close in)
                         const f = d < reach ? Math.pow(1 - d / reach, 2) : 0;
-                        // Ripple: a gravity wave rolling outward through the lensed area
-                        const ripple = Math.sin(d / (small ? 9 : 14) - now / 180) * (small ? 3 : 5) * Math.pow(1 - d / lensReach, 1.2);
-                        const pull = Math.min(d * 0.6 * suction, hole * (small ? 0.35 : 0.5) * suction) * f - ripple;
+                        const pull = Math.min(d * 0.6 * suction, hole * (small ? 0.35 : 0.5) * suction) * f;
                         const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
-                        // Lensing: stretch words along the circle around the hole, squash them radially
+                        // Gravity: stretch words toward the hole and thin them sideways, like being sucked in
                         const g = Math.pow(1 - d / lensReach, 1.5);
-                        const tangent = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+                        const tangent = Math.atan2(dy, dx) * 180 / Math.PI;
                         const stretch = 1 + lens * g, squash = 1 - lens * 0.45 * g;
                         it.el.style.transform =
                             "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px)" +
