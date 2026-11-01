@@ -384,13 +384,6 @@
                         height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* ── BLACK HOLE ── */
-        .bh {
-            display: inline-block;
-            text-indent: 0;
-            will-change: transform;
-        }
-
         /* ── FOOTER ── */
         .footer {
             font-size: 11px;
@@ -1171,95 +1164,30 @@
             }
 
             document.addEventListener('mousemove', e => applyBoost(e.clientX, e.clientY));
+
+            // ── Touch: tapping the ball sends it off in a new direction, away from the finger ──
+            function applyTouch(clientX, clientY) {
+                const rect = photo.getBoundingClientRect();
+                const dx = rect.left + rect.width / 2 - clientX;
+                const dy = rect.top + rect.height / 2 - clientY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance > rect.width / 2 + 30) return; // only when the ball itself is touched
+                // dead-centre tap: pick a random direction
+                const angle = distance > 0 ? Math.atan2(dy, dx) : Math.random() * Math.PI * 2;
+                const speed = 6;
+                // keep each axis at least at cruising speed so it settles back into its usual diagonal drift
+                vx = (Math.cos(angle) < 0 ? -1 : 1) * Math.max(Math.abs(Math.cos(angle)) * speed, baseVx);
+                vy = (Math.sin(angle) < 0 ? -1 : 1) * Math.max(Math.abs(Math.sin(angle)) * speed, baseVy);
+                boostEndTime = Date.now() + 150;
+            }
+            document.addEventListener('touchstart', e => {
+                for (const t of e.changedTouches) applyTouch(t.clientX, t.clientY);
+            }, { passive: true });
+            document.addEventListener('touchmove', e => {
+                for (const t of e.changedTouches) applyBoost(t.clientX, t.clientY);
+            }, { passive: true });
             movePhoto();
         });
-    </script>
-    <script>
-        // ── Black hole: words near the bouncing photo get pulled into its centre and shrink ──
-        (function () {
-            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-            const photo = document.getElementById("profilePhoto");
-            const suction = 1.1; // 1 = original strength; raise for a stronger pull
-            const targets = ".perex, .paragraph, .gig-entry"; // only the about text and the gigs
-            let items = [];
-
-            // Wrap every word in a span so each one can move on its own
-            function wrapWords(root) {
-                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-                const nodes = [];
-                while (walker.nextNode()) if (walker.currentNode.textContent.trim()) nodes.push(walker.currentNode);
-                nodes.forEach(function (node) {
-                    const frag = document.createDocumentFragment();
-                    node.textContent.split(/(\s+)/).forEach(function (part) {
-                        if (!part) return;
-                        if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-                        const span = document.createElement("span");
-                        span.className = "bh";
-                        span.textContent = part;
-                        frag.appendChild(span);
-                    });
-                    node.parentNode.replaceChild(frag, node);
-                });
-            }
-            document.querySelectorAll(targets).forEach(wrapWords);
-
-            // Cache each word's resting position in page coordinates
-            function measure() {
-                const sx = window.scrollX, sy = window.scrollY;
-                items = Array.from(document.querySelectorAll(".bh")).map(function (el) {
-                    el.style.transform = "";
-                    const r = el.getBoundingClientRect();
-                    return { el: el, x: r.left + r.width / 2 + sx, y: r.top + r.height / 2 + sy, on: false, visible: r.width > 0 };
-                });
-            }
-            measure();
-            window.addEventListener("resize", measure);
-            window.addEventListener("load", measure);
-            document.addEventListener("click", function () { setTimeout(measure, 450); });
-
-            function tick() {
-                const r = photo.getBoundingClientRect();
-                const cx = r.left + r.width / 2 + window.scrollX;
-                const cy = r.top + r.height / 2 + window.scrollY;
-                const hole = r.width / 2;
-                const small = window.innerWidth <= 770;
-                const reach = hole * (small ? 1.7 : 2.1) * suction;
-                const lensReach = reach * 1.25;
-                const lens = small ? 0.25 : 0.35;
-
-                for (let i = 0; i < items.length; i++) {
-                    const it = items[i];
-                    if (!it.visible) continue;
-                    const dx = cx - it.x, dy = cy - it.y;
-                    const d = Math.sqrt(dx * dx + dy * dy);
-                    if (d < lensReach) {
-                        // Suction: pull straight toward the centre and shrink (only close in)
-                        const f = d < reach ? Math.pow(1 - d / reach, 2) : 0;
-                        const pull = Math.min(d * 0.6 * suction, hole * (small ? 0.35 : 0.5) * suction) * f;
-                        const ux = d ? dx / d : 0, uy = d ? dy / d : 0;
-                        // Shrink: words are at their smallest by the time they reach the circle's edge, and gone inside it
-                        const k = d < reach ? Math.min(1, (reach - d) / (reach - hole)) : 0;
-                        // Gravity: stretch words toward the hole and thin them sideways, like being sucked in
-                        const g = Math.pow(1 - d / lensReach, 1.5);
-                        const tangent = Math.atan2(dy, dx) * 180 / Math.PI;
-                        const stretch = 1 + lens * g, squash = 1 - lens * 0.45 * g;
-                        it.el.style.transform =
-                            "translate(" + (ux * pull).toFixed(1) + "px," + (uy * pull).toFixed(1) + "px)" +
-                            " rotate(" + tangent.toFixed(1) + "deg) scale(" + stretch.toFixed(3) + "," + squash.toFixed(3) + ") rotate(" + (-tangent).toFixed(1) + "deg)" +
-                            " scale(" + (1 - 0.95 * k).toFixed(3) + ")";
-                        it.el.style.opacity = (1 - k * k).toFixed(2);
-                        it.on = true;
-                    } else if (it.on) {
-                        it.el.style.transform = "";
-                        it.el.style.opacity = "";
-                        it.on = false;
-                    }
-                }
-                requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
-        })();
     </script>
 <script>
 // Builds the e-mail address only when a visitor clicks, so it is not in the page for spam bots.
