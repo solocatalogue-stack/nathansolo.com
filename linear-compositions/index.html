@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Compositions — Matěj Moravec / Nathan Solo</title>
+<meta name="description" content="Linear Compositions: an hour-long live audiovisual installation by Matěj Moravec, inspired by the Czech painter Zdeněk Sýkora, with live sound by Nathan Solo.">
+<meta property="og:title" content="Linear Compositions — Matěj Moravec / Nathan Solo">
+<meta property="og:image" content="https://nathansolo.com/linear-compositions/still-lines.jpg">
+<link rel="icon" href="../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --ink: #111; --paper: #f0ebe1; --muted: #555; }
+  body { background: var(--paper); color: var(--ink); font-family: 'Space Mono', monospace; font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+  .back { font-size: 13px; color: var(--ink); }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: clamp(56px, 12vw, 120px); line-height: .9; margin: 28px 0 8px; letter-spacing: 1px; }
+  .sub { color: var(--muted); max-width: 680px; }
+  h2 { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 32px; margin: 48px 0 12px; border-top: 1.5px solid var(--ink); padding-top: 12px; }
+  p { max-width: 680px; margin-bottom: 14px; }
+  .hero { width: 100%; display: block; margin-top: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .grid img, .grid video { width: 100%; display: block; background: #e4ddd0; }
+  .cap { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 20px; max-width: 680px; }
+  dt { font-weight: 700; }
+  a { color: var(--ink); }
+  ul.dl { list-style: none; }
+  ul.dl li { margin-bottom: 6px; }
+  ul.dl li::before { content: "↓ "; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← nathansolo.com</a>
+  <h1>Linear<br>Compositions</h1>
+  <p class="sub">An hour-long live audiovisual installation by Matěj Moravec, inspired by the Czech painter Zdeněk Sýkora. Live sound by Nathan Solo.</p>
+  <img class="hero" src="still-lines.jpg" alt="Still from Linear Compositions: coloured lines of different widths crossing on a cream background">
+
+  <h2>The work</h2>
+  <p>Linear Compositions sets the paintings of Zdeněk Sýkora (1920–2011), a pioneer of computer-aided art, into motion and lets live sound shape them. In 1973 Sýkora began his <i>Lines</i> series: tangled, colourful lines that look spontaneous, but whose course, width, colour and turns were all set by chance, through random numbers and computer programs, and then painted by hand.</p>
+  <p>Linear Compositions asks how these still images might move. Lines draw themselves across the screen, curve, cross and erase themselves. They weave into grids, circle a centre, run through tunnels and bounce off the edges of the frame, across sixteen chapters that flow into one another over the course of an hour.</p>
+  <p>Live audio is analysed in real time, and its low, middle and high frequencies shape the thickness of every line. Deep sounds swell the heavy strokes, mid-range tones move the medium ones, and hi-hats and other bright sounds pulse through the finest lines. The compositions stay true to Sýkora's rules of chance, and the sound in the room makes them breathe.</p>
+
+  <h2>Video</h2>
+  <div class="grid">
+    <div><video src="LC_A_snakes.mp4" controls muted loop playsinline preload="metadata" poster="still-lines.jpg"></video><div class="cap">Chapter A, snakes</div></div>
+    <div><video src="LC_transition_A-B.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Transition A–B</div></div>
+    <div><video src="LC_transition_E-F.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Transition E–F</div></div>
+    <div><video src="LC_test_live_maison.mp4" controls loop playsinline preload="metadata"></video><div class="cap">Live test at home</div></div>
+  </div>
+
+  <h2>Stills</h2>
+  <div class="grid">
+    <img src="still-lines.jpg" alt="Lines" loading="lazy">
+    <img src="still-circles.jpg" alt="Circles" loading="lazy">
+    <img src="still-orbit.jpg" alt="Orbit" loading="lazy">
+  </div>
+  <p class="cap">© Matěj Moravec, 2026. High-resolution images and video on request.</p>
+
+  <h2>Technical</h2>
+  <dl>
+    <dt>Format</dt><dd>Live audiovisual installation, 60 min, 16 chapters with continuous transitions, can run as a loop</dd>
+    <dt>Graphics</dt><dd>Real-time generative graphics in TouchDesigner, vector lines generated in Python</dd>
+    <dt>Output</dt><dd>One 16:9 video output, native 1280 × 720, scalable</dd>
+    <dt>Display</dt><dd>Projector or a set of 16:9 screens (25 inch minimum), HDMI</dd>
+  </dl>
+
+  <h2>Press &amp; contact</h2>
+  <ul class="dl">
+    <li><a href="Linear_Compositions_press_release_MatejMoravec.pdf">Press release (PDF)</a></li>
+    <li><a href="NathanSolo_EPK.pdf">Nathan Solo EPK (PDF)</a></li>
+  </ul>
+  <p style="margin-top:14px">Matěj Moravec, visuals · <a href="https://matejmoravec.com">matejmoravec.com</a><br>
+  Nathan Solo, live sound · <a href="https://nathansolo.com">nathansolo.com</a> · <a href="mailto:solo.catalogue@gmail.com">solo.catalogue@gmail.com</a></p>
+</div>
+</body>
+</html>
