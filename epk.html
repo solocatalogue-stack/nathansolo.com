@@ -178,6 +178,19 @@
     margin-bottom: 0.5mm;
   }
 
+  /* AV SHOW */
+  .av-row {
+    display: grid;
+    grid-template-columns: 38mm 1fr 1fr;
+    gap: 5mm;
+    margin-bottom: 5mm;
+    border-bottom: var(--rule);
+    padding-bottom: 5mm;
+    align-items: start;
+  }
+  .av-row img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; }
+  .av-row a { color: #0a0a0a; }
+
   /* FOOTER */
   .footer {
     margin-top: auto;
@@ -212,7 +225,7 @@
     .hero-name { font-size: 18vw; left: 16px; }
     .hero-meta { right: 16px; font-size: 8pt; }
     .content { padding: 16px; }
-    .bio-grid, .two-col, .three-col, .footer { grid-template-columns: 1fr; }
+    .bio-grid, .two-col, .three-col, .av-row, .footer { grid-template-columns: 1fr; }
     .bio-col p, .section-body { font-size: 10pt; }
     .section-title, .lang-label, .sublabel { font-size: 8pt; }
     .epk-stamp { grid-column: auto; text-align: left; }
@@ -233,12 +246,15 @@
     }
     /* tighter print layout so the whole EPK fits one A4 sheet */
     .page { width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
-    .hero { height: 42mm; }
-    .hero-name { font-size: 54pt; }
+    .hero { height: 36mm; }
+    .hero-name { font-size: 48pt; }
     .content { padding: 4mm 11mm 4mm 11mm; }
     .tagline { padding: 1.5mm 0; margin-bottom: 3mm; }
-    .bio-grid, .two-col, .three-col { gap: 4mm; margin-bottom: 2.5mm; padding-bottom: 2.5mm; }
-    .bio-col p { font-size: 6.5pt; line-height: 1.4; }
+    .bio-grid, .two-col, .three-col, .av-row { gap: 4mm; margin-bottom: 2.5mm; padding-bottom: 2.5mm; }
+    .av-row { grid-template-columns: 18mm 1fr 1fr; gap: 4mm; }
+    .av-row .section-title { margin-bottom: 1mm; }
+    .av-row { margin-bottom: 2mm; padding-bottom: 2mm; }
+    .bio-col p { font-size: 6.5pt; line-height: 1.35; }
     .section-body { font-size: 6.4pt; line-height: 1.45; }
     .footer { padding-top: 2.5mm; }
   }
@@ -306,6 +322,23 @@
           <div class="sublabel">Recent · Récemment</div>
           Vril, Elena Colombi, Zenker Brothers,<br>
           Andrea, Stimming, Voiski
+        </div>
+      </div>
+    </div>
+
+    <!-- AV SHOW -->
+    <div class="av-row">
+      <a href="linear-compositions/"><img src="linear-compositions/still-lines.jpg" alt="Linear Compositions still: coloured lines crossing"></a>
+      <div>
+        <div class="section-title">AV Show · Linear Compositions</div>
+        <div class="section-body">
+          Hour-long live AV show. Visuals by Matěj Moravec after Sýkora's <em>Lines</em>, live sound by Nathan Solo.
+        </div>
+      </div>
+      <div>
+        <div class="section-title">Spectacle AV</div>
+        <div class="section-body">
+          Spectacle AV d'une heure. Visuels : Matěj Moravec, d'après les <em>Lignes</em> de Sýkora. Son live : Nathan Solo.
         </div>
       </div>
     </div>
@@ -381,6 +414,7 @@
         <div class="section-title">Links · Liens</div>
         <div class="section-body">
           <a href="https://nathansolo.com" style="color:#0a0a0a;text-decoration:none;display:block">nathansolo.com</a>
+          <a href="https://nathansolo.com/linear-compositions/" style="color:#0a0a0a;text-decoration:none;display:block">nathansolo.com/linear-compositions (AV)</a>
           <a href="https://instagram.com/nathansolo_live" style="color:#0a0a0a;text-decoration:none;display:block">instagram.com/nathansolo_live</a>
           <a href="https://drive.google.com/drive/folders/1Jk-ggkNWmkN3DXP2xkK7u6oQLh5hCty0?usp=sharing" target="_blank" style="color:#0a0a0a;text-decoration:none;display:block">Presskit, photos &amp; rider (Drive)</a>
         </div>
