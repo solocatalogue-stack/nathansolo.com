@@ -73,7 +73,16 @@
     <li><a href="NathanSolo_EPK.pdf">Nathan Solo EPK (PDF)</a></li>
   </ul>
   <p style="margin-top:14px">Matěj Moravec, visuals · <a href="https://matejmoravec.com">matejmoravec.com</a><br>
-  Nathan Solo, live sound · <a href="https://nathansolo.com">nathansolo.com</a> · <a href="mailto:solo.catalogue@gmail.com">solo.catalogue@gmail.com</a></p>
+  Nathan Solo, live sound · <a href="https://nathansolo.com">nathansolo.com</a> · <a href="#contact" class="js-mail" data-u="solo.catalogue" data-d="moc.liamg">e-mail for booking</a></p>
 </div>
+<script>
+// Builds the e-mail address only when a visitor clicks, so it is not in the page for spam bots.
+document.querySelectorAll(".js-mail").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+        e.preventDefault();
+        window.location.href = "mai" + "lto:" + a.dataset.u + "@" + a.dataset.d.split("").reverse().join("");
+    });
+});
+</script>
 </body>
 </html>
