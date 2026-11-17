@@ -29,6 +29,8 @@
   ul.dl { list-style: none; }
   ul.dl li { margin-bottom: 6px; }
   ul.dl li::before { content: "↓ "; }
+  .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+  .vgrid video { width: 100%; display: block; background: #000; aspect-ratio: 9 / 16; object-fit: cover; }
 </style>
 </head>
 <body>
@@ -42,6 +44,16 @@
   <p>Linear Compositions is inspired by the work of Zdeněk Sýkora (1920–2011), a pioneer of computer-aided art, and especially by his work with chance in the <i>Lines</i> paintings he began in 1973. Each of those paintings has its own numerical code, a "score" that Sýkora worked out by hand for that painting alone, with chance playing a part. Linear Compositions is an original work: its compositions are generated live and shaped by sound.</p>
   <p>Linear Compositions asks how lines might move and respond to music. Lines draw themselves across the screen, curve, cross and erase themselves. They weave into grids, circle a centre, run through tunnels and bounce off the edges of the frame, across sixteen chapters that flow into one another over the course of an hour.</p>
   <p>Live audio is analysed in real time, and its low, middle and high frequencies shape the thickness of every line. Deep sounds swell the heavy strokes, mid-range tones move the medium ones, and hi-hats and other bright sounds pulse through the finest lines. Chance plays its part, and the sound in the room makes the lines breathe.</p>
+
+  <h2>New sketches, November 2026</h2>
+  <p>Linear Compositions is evolving show by show. The new visual language is made of lines only, drawn on black in a palette of orange, blue, white, yellow, violet, lime and grey-teal. Lines grow like snakes, circle a centre, travel as waves and bounce off the edges of the frame. Grids of thin lines are lit by thicker ones that pulse, scan across the picture or glitch, and the sound in the room sets how thick each line becomes.</p>
+  <p>These are work-in-progress sketches, made in the browser and shown here in vertical format. They will be redrawn in TouchDesigner for the live show.</p>
+  <div class="vgrid">
+    <div><video src="sketches/LC_A1-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Snakes</div></div>
+    <div><video src="sketches/LC_A3-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Orbit</div></div>
+    <div><video src="sketches/LC_G3-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Grid with a scanning front</div></div>
+    <div><video src="sketches/LC_G7-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Camera flight through the grid</div></div>
+  </div>
 
   <h2>Video</h2>
   <div class="grid">
@@ -62,7 +74,7 @@
   <h2>Technical</h2>
   <dl>
     <dt>Format</dt><dd>Live audiovisual installation, 60 min, 16 chapters with continuous transitions, can run as a loop</dd>
-    <dt>Graphics</dt><dd>Real-time generative graphics in TouchDesigner, vector lines generated in Python</dd>
+    <dt>Graphics</dt><dd>Real-time generative graphics in TouchDesigner, line paths computed by GLSL shaders</dd>
     <dt>Output</dt><dd>One 16:9 video output, native 1280 × 720, scalable</dd>
     <dt>Display</dt><dd>Projector (image at least 3 m wide) or one or more 16:9 screens, 55 inch minimum (65 ideal), HDMI</dd>
   </dl>
