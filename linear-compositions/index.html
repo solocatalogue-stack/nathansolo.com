@@ -6,12 +6,12 @@
 <title>Linear Compositions — Matěj Moravec / Nathan Solo</title>
 <meta name="description" content="Linear Compositions: a 90-minute live audiovisual installation by Matěj Moravec, inspired by the work of the Czech painter Zdeněk Sýkora, with live sound by Nathan Solo.">
 <meta property="og:title" content="Linear Compositions — Matěj Moravec / Nathan Solo">
-<meta property="og:image" content="https://nathansolo.com/linear-compositions/still-lines.jpg">
+<meta property="og:image" content="https://nathansolo.com/linear-compositions/still-A3.jpg">
 <link rel="icon" href="../favicon.ico">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root { --ink: #111; --paper: #f0ebe1; --muted: #555; }
+  :root { --ink: #fff; --paper: #000; --muted: #7da2a3; --a: #ff3c00; --b: #adf700; }
   body { background: var(--paper); color: var(--ink); font-family: 'Space Mono', monospace; font-size: 15px; line-height: 1.6; }
   .wrap { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
   .back { font-size: 13px; color: var(--ink); }
@@ -20,54 +20,49 @@
   h2 { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 32px; margin: 48px 0 12px; border-top: 1.5px solid var(--ink); padding-top: 12px; }
   p { max-width: 680px; margin-bottom: 14px; }
   .hero { width: 100%; display: block; margin-top: 28px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-  .grid img, .grid video { width: 100%; display: block; background: #e4ddd0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 12px; }
+  .grid img, .grid video { width: 100%; display: block; background: #111; }
   .cap { font-size: 12px; color: var(--muted); margin-top: 6px; }
   dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 20px; max-width: 680px; }
   dt { font-weight: 700; }
-  a { color: var(--ink); }
+  a { color: var(--ink); text-decoration-color: var(--a); text-underline-offset: 3px; }
+  a:hover { color: #000; background: var(--b); }
+  h2 { border-top-color: var(--a); }
   ul.dl { list-style: none; }
   ul.dl li { margin-bottom: 6px; }
   ul.dl li::before { content: "↓ "; }
-  .vgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-  .vgrid video { width: 100%; display: block; background: #000; aspect-ratio: 9 / 16; object-fit: cover; }
-</style>
+  </style>
 </head>
 <body>
 <div class="wrap">
   <a class="back" href="../">← nathansolo.com</a>
   <h1>Linear<br>Compositions</h1>
   <p class="sub">A 90-minute live audiovisual installation by Matěj Moravec, inspired by the Lines series of the Czech painter Zdeněk Sýkora. Live sound by Nathan Solo.</p>
-  <img class="hero" src="still-lines.jpg" alt="Still from Linear Compositions: coloured lines of different widths crossing on a cream background">
+  <img class="hero" src="still-A1.jpg" alt="Still from Linear Compositions: curving lines of different widths and colours on black">
 
   <h2>The work</h2>
   <p>Linear Compositions is inspired by the work of Zdeněk Sýkora (1920–2011), a pioneer of computer-aided art, and especially by his work with chance in the <i>Lines</i> paintings he began in 1973. Each of those paintings has its own numerical code, a "score" that Sýkora worked out by hand for that painting alone, with chance playing a part. Linear Compositions is an original work: its compositions are generated live and shaped by sound.</p>
   <p>Linear Compositions asks how lines might move and respond to music. Lines draw themselves across the screen, curve, cross and erase themselves. They weave into grids, circle a centre, run through tunnels and bounce off the edges of the frame, across fourteen chapters that flow into one another over a 90-minute loop.</p>
   <p>Live audio is analysed in real time, and its low, middle and high frequencies shape the thickness of every line. Deep sounds swell the heavy strokes, mid-range tones move the medium ones, and hi-hats and other bright sounds pulse through the finest lines. Chance plays its part, and the sound in the room makes the lines breathe.</p>
 
-  <h2>New sketches, November 2026</h2>
-  <p>Linear Compositions is evolving show by show. The new visual language is made of lines only, drawn on black in a palette of orange, blue, white, yellow, violet, lime and grey-teal. Lines grow like snakes, circle a centre, travel as waves and bounce off the edges of the frame. Grids of thin lines are lit by thicker ones that pulse, scan across the picture or glitch, and the sound in the room sets how thick each line becomes.</p>
-  <p>These are work-in-progress sketches, made in the browser and shown here in vertical format. They will be redrawn in TouchDesigner for the live show.</p>
-  <div class="vgrid">
-    <div><video src="sketches/LC_A1-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Snakes</div></div>
-    <div><video src="sketches/LC_A3-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Orbit</div></div>
-    <div><video src="sketches/LC_G3-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Grid with a scanning front</div></div>
-    <div><video src="sketches/LC_G7-9x16.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Camera flight through the grid</div></div>
-  </div>
+  <h2>New visual language, November 2026</h2>
+  <p>Linear Compositions is evolving show by show. The new visuals are made of lines only, drawn on black in a palette of orange, blue, white, yellow, violet, lime and grey-teal. Lines grow like snakes, circle a centre, travel as waves and bounce off the edges of the frame. Grids of thin lines are lit by thicker ones that pulse, scan across the picture or glitch, and the sound in the room sets how thick each line becomes.</p>
+  <p>These are work-in-progress sketches, made in the browser. They will be redrawn in TouchDesigner for the live show.</p>
 
   <h2>Video</h2>
   <div class="grid">
-    <div><video src="LC_A_snakes.mp4" controls muted loop playsinline preload="metadata" poster="still-lines.jpg"></video><div class="cap">Chapter A, snakes</div></div>
-    <div><video src="LC_transition_A-B.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Transition A–B</div></div>
-    <div><video src="LC_transition_E-F.mp4" controls muted loop playsinline preload="metadata"></video><div class="cap">Transition E–F</div></div>
-    <div><video src="LC_test_live_maison.mp4" controls loop playsinline preload="metadata"></video><div class="cap">Live test at home</div></div>
+    <div><video src="hd/LC_A1.mp4" controls muted loop playsinline preload="metadata" poster="still-A1.jpg"></video><div class="cap">Snakes</div></div>
+    <div><video src="hd/LC_A3.mp4" controls muted loop playsinline preload="metadata" poster="still-A3.jpg"></video><div class="cap">Orbit</div></div>
+    <div><video src="hd/LC_G3.mp4" controls muted loop playsinline preload="metadata" poster="still-G3.jpg"></video><div class="cap">Grid with a scanning front</div></div>
+    <div><video src="hd/LC_G7.mp4" controls muted loop playsinline preload="metadata" poster="still-G7.jpg"></video><div class="cap">Camera flight through the grid</div></div>
   </div>
 
   <h2>Stills</h2>
   <div class="grid">
-    <img src="still-lines.jpg" alt="Lines" loading="lazy">
-    <img src="still-circles.jpg" alt="Circles" loading="lazy">
-    <img src="still-orbit.jpg" alt="Orbit" loading="lazy">
+    <img src="still-A1.jpg" alt="Snakes" loading="lazy">
+    <img src="still-A3.jpg" alt="Orbit" loading="lazy">
+    <img src="still-G3.jpg" alt="Grid with a scanning front" loading="lazy">
+    <img src="still-G7.jpg" alt="Camera flight through the grid" loading="lazy">
   </div>
   <p class="cap">© Matěj Moravec, 2026. Original generative compositions; no works by Zdeněk Sýkora are reproduced. High-resolution images and video on request.</p>
 
